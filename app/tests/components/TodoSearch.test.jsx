@@ -6,7 +6,7 @@ var TestUtils = require('react-addons-test-utils');
 
 var TodoSearch = require('TodoSearch');
 
-describe('Todo Search', () => {
+describe('TodoSearch', () => {
   it ('Should exist', () => {
     Expect(TodoSearch).toExist();
   });
@@ -29,7 +29,7 @@ describe('Todo Search', () => {
 
     todoSearch.refs.showCompleted.checked = showCompleted;
     TestUtils.Simulate.change(todoSearch.refs.showCompleted);
-    
+
     Expect(spy).toHaveBeenCalledWith(showCompleted, '');
   });
 });
