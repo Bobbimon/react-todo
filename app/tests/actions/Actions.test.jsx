@@ -1,4 +1,5 @@
 var Expect = require('expect');
+
 var Actions = require('Actions');
 
 describe('Actions', () => {
