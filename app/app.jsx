@@ -12,10 +12,6 @@ Store.subscribe(() => {
   console.log('New state', Store.getState());
 });
 
-Store.dispatch(Actions.addTodo('Do the dishes'));
-Store.dispatch(Actions.setSearchText('dish'));
-Store.dispatch(Actions.toggleShowCompleted());
-
 // Load foundation
 $(document).foundation();
 
