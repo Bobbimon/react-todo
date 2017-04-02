@@ -2,6 +2,7 @@ import ConfigureMockStore from 'redux-mock-store';
 import Thunk from 'redux-thunk';
 var Expect = require('expect');
 
+import fireBase, {firebaseRef} from 'app/firebase/'
 var Actions = require('Actions');
 
 var createMockStore = ConfigureMockStore([Thunk]);
@@ -74,13 +75,51 @@ describe('Actions', () => {
     }).catch(done);
   });
 
-  it ('Should generate toggle todo action', () => {
+  it ('Should generate update todo action', () => {
     var action = {
-      type: 'TOGGLE_TODO',
-      id: 1
+      type: 'UPDATE_TODO',
+      id: '12',
+      updates : {completed: false}
     };
-    var res = Actions.toggleTodo(action.id);
+    var res = Actions.updateTodo(action.id, action.updates);
 
     Expect(res).toEqual(action);
+  });
+
+  describe ('Tests with firebase todos', () => {
+    var testTodoRef;
+
+    beforeEach((done) => {
+      testTodoRef = firebaseRef.child('todos').push();
+
+      testTodoRef.set({
+        text: 'Something to do',
+        completed: false,
+        createdAt: 1231231
+      }).then(() => done());
+    });
+
+    afterEach((done) => {
+      testTodoRef.remove().then(() => done());
+    });
+
+    it ('Should toogle todo and dispatch UPDATE_TODO action', (done) => {
+      const store = createMockStore({});
+      const action = Actions.startToggleTodo(testTodoRef.key, true);
+
+      store.dispatch(action).then(() => {
+        const mockActions = store.getActions();
+
+        Expect(mockActions[0]).toInclude({
+          type: 'UPDATE_TODO',
+          id: testTodoRef.key,
+        });
+        Expect(mockActions[0].updates).toInclude({
+          completed: true
+        });
+        Expect(mockActions[0].updates.completedAt).toExist();
+        done();
+      }, done)
+    });
   });
 });
